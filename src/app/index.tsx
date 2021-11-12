@@ -16,6 +16,8 @@ import { HomePage } from './pages/HomePage/Loadable';
 import { NotFoundPage } from './pages/NotFoundPage/Loadable';
 import { useTranslation } from 'react-i18next';
 
+import WeatherPage from './pages/WeatherPage';
+
 export function App() {
   const { i18n } = useTranslation();
   return (
@@ -30,6 +32,12 @@ export function App() {
 
       <Switch>
         <Route exact path={process.env.PUBLIC_URL + '/'} component={HomePage} />
+        <Route
+          exact
+          path={process.env.PUBLIC_URL + '/react-4'}
+          component={WeatherPage}
+        />
+
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />
