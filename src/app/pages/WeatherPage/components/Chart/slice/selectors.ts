@@ -23,10 +23,12 @@ export const selectIsError = createSelector(
 
 export const selectMaxTemps = createSelector(
   [selectSlice],
+  // This mapping is used to display dates on x axsis along with data
   ({ forecastData }) => forecastData.map(node => [node.ts, node.max_temp]),
 );
 
 export const selectMinTemps = createSelector(
   [selectSlice],
+  // This mapping is used to display dates on x axsis along with data
   ({ forecastData }) => forecastData.map(node => [node.ts, node.min_temp]),
 );
