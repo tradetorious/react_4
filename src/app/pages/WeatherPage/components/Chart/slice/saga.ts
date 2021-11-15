@@ -1,7 +1,6 @@
+import { request } from 'utils/request';
 import { put, takeLatest } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
-
-import axios from 'axios';
 
 import { chartActions as actions } from '.';
 
@@ -24,14 +23,7 @@ function* fetchForecastData(action: PayloadAction<string | City[]>) {
   console.log(url);
   yield put(actions.setIsLoading(true));
   try {
-    const data = yield axios
-      .request({
-        method: 'get',
-        url,
-        headers: { 'Access-Control-Allow-Origin': '*' },
-      })
-      .then(res => res.data);
-
+    const data = yield request(url);
     yield put(actions.setForecastData({ id, data: data.data }));
   } catch (err) {
     console.log(err);
