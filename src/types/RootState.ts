@@ -1,6 +1,8 @@
 import { GithubRepoFormState } from 'app/pages/HomePage/Features/GithubRepoForm/slice/types';
 import { ThemeState } from 'styles/theme/slice/types';
-import { WeatherState } from 'app/pages/WeatherPage/slice/types';
+// import { WeatherState } from 'app/pages/WeatherPage/slice/types';
+import { TableState } from 'app/pages/WeatherPage/components/Table/slice/types';
+import { ChartState } from 'app/pages/WeatherPage/components/Chart/slice/types';
 // [IMPORT NEW CONTAINERSTATE ABOVE] < Needed for generating containers seamlessly
 
 /* 
@@ -12,6 +14,8 @@ import { WeatherState } from 'app/pages/WeatherPage/slice/types';
 export interface RootState {
   theme?: ThemeState;
   githubRepoForm?: GithubRepoFormState;
-  weather?: WeatherState;
+  table?: TableState;
+  chart?: ChartState;
+  // weather?: WeatherState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

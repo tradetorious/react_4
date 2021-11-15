@@ -6,28 +6,35 @@
 import * as React from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectCities,
+  selectIsError,
+  selectIsLoading,
+} from './slice/selectors';
 import styled from 'styled-components/macro';
 
-import { useWeatherSlice } from '../../slice';
-import { selectActiveCity, selectCities } from '../../slice/selectors';
+import { useTableSlice, cityChanged, fetchCities } from './slice';
+import { selectActiveCity } from '../Chart/slice/selectors';
 
 export default function Table() {
-  const cities = useSelector(selectCities);
-  const activeCity = useSelector(selectActiveCity);
-
-  const slice = useWeatherSlice();
-
+  const slice = useTableSlice();
   const { actions } = slice;
+
+  const cities = useSelector(selectCities);
+  const isLoading = useSelector(selectIsLoading);
+  const isError = useSelector(selectIsError);
+  const activeCity = useSelector(selectActiveCity);
 
   const dispatch = useDispatch();
 
   const handleActiveCityChange = (e, id: string) => {
-    if (id !== activeCity) dispatch(actions.setActiveCity(id));
+    console.log(activeCity);
+    if (activeCity !== id) dispatch(cityChanged(id));
   };
 
   useEffect(() => {
-    dispatch(actions.setActiveCity(activeCity));
-  }, [activeCity, dispatch, actions]);
+    dispatch(fetchCities());
+  }, [actions, dispatch]);
 
   return (
     <div>
@@ -35,16 +42,23 @@ export default function Table() {
         <span>ID</span>
         <span>NAME</span>
       </TH>
-      {cities.map(city => {
-        const { id, name } = city;
+      {isLoading ? (
+        <h1>LOADING</h1>
+      ) : isError ? (
+        <h1>ERROR</h1>
+      ) : (
+        cities &&
+        cities.map(city => {
+          const { id, name } = city;
 
-        return (
-          <TR key={id} onMouseEnter={e => handleActiveCityChange(e, id)}>
-            <span id="id">{id}</span>
-            <span id="name">{name}</span>
-          </TR>
-        );
-      })}
+          return (
+            <TR key={id} onMouseEnter={e => handleActiveCityChange(e, id)}>
+              <span id="id">{id}</span>
+              <span id="name">{name}</span>
+            </TR>
+          );
+        })
+      )}
     </div>
   );
 }

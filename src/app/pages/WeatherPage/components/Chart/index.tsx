@@ -4,19 +4,23 @@
  *
  */
 import * as React from 'react';
+
 import { useRef, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-  selectActiveCityName,
+  // selectActiveCityName,
   selectIsError,
   selectIsLoading,
   selectMaxTemps,
+  selectActiveCity,
   selectMinTemps,
-} from '../../slice/selectors';
+} from './slice/selectors';
 
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import { useChartSlice } from './slice';
+import { selectCities } from '../Table/slice/selectors';
 
 const defaultChartOptions: Highcharts.Options = {
   yAxis: {
@@ -42,11 +46,24 @@ export default function Chart(props: HighchartsReact.Props) {
     useState<Highcharts.Options>(defaultChartOptions);
   const chartComponentRef = useRef<HighchartsReact.RefObject>(null);
 
+  useChartSlice();
+
   const maxTemps = useSelector(selectMaxTemps);
   const minTemps = useSelector(selectMinTemps);
   const isLoading = useSelector(selectIsLoading);
   const isError = useSelector(selectIsError);
-  const cityName = useSelector(selectActiveCityName);
+  const activeCity = useSelector(selectActiveCity);
+
+  const cities = useSelector(selectCities);
+
+  const [cityName, setCityName] = useState('');
+
+  useEffect(() => {
+    if (cities)
+      setCityName(
+        prev => cities.find(city => city.id === activeCity)?.name || prev,
+      );
+  }, [activeCity, cities]);
 
   useEffect(() => {
     if (isLoading) {

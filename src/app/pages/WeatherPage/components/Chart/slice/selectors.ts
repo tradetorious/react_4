@@ -3,24 +3,15 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from 'types';
 import { initialState } from '.';
 
-const selectSlice = (state: RootState) => state.weather || initialState;
+const selectSlice = (state: RootState) => state.chart || initialState;
 
-export const selectWeather = createSelector([selectSlice], state => state);
+export const selectChart = createSelector([selectSlice], state => state);
 
 export const selectActiveCity = createSelector(
   [selectSlice],
   state => state.activeCity,
 );
 
-export const selectActiveCityName = createSelector(
-  [selectSlice],
-  ({ cities, activeCity }) => cities.find(city => city.id === activeCity)?.name,
-);
-
-export const selectCities = createSelector(
-  [selectSlice],
-  state => state.cities,
-);
 export const selectIsLoading = createSelector(
   [selectSlice],
   state => state.isLoading,
