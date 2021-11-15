@@ -11,16 +11,15 @@ function* fetchForecastData(action: PayloadAction<string | City[]>) {
   const API_KEY = process.env.REACT_APP_API_KEY;
   let id: string;
 
+  // Whether the function is invoked by loading cities, or hovering over city name, the ID will be in different places
   if (action.type === tableActions.citiesFetched.type) {
     const cities = action.payload as City[];
     id = cities[0].id;
-    console.log(id);
   } else {
     id = action.payload as string;
   }
 
   const url = `https://api.weatherbit.io/v2.0/forecast/daily?city_id=${id}&key=${API_KEY}`;
-  console.log(url);
   yield put(actions.setIsLoading(true));
   try {
     const data = yield request(url);

@@ -6,7 +6,7 @@ import { City } from './types';
 import data from './mockData';
 
 const fetcher = ms =>
-  new Promise((resolve, reject) => {
+  new Promise((resolve, _) => {
     setTimeout(() => {
       resolve(data.cities);
     }, ms);

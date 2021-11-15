@@ -13,9 +13,6 @@ export const initialState: TableState = {
   isError: false,
 };
 
-export const fetchCities = createAction<undefined>('table/fetchCities');
-export const cityChanged = createAction<string>('table/cityChanged');
-
 const slice = createSlice({
   name: 'table',
   initialState,
@@ -33,6 +30,10 @@ const slice = createSlice({
     // cityChanged(sate, action: PayloadAction<string>) {},
   },
 });
+
+export const fetchCities = createAction<undefined>('table/fetchCities');
+export const cityChanged = createAction<string>('table/cityChanged');
+
 export const { actions: tableActions } = slice;
 
 export const useTableSlice = () => {
@@ -40,15 +41,3 @@ export const useTableSlice = () => {
   useInjectSaga({ key: slice.name, saga: tableSaga });
   return { actions: slice.actions };
 };
-
-/**
- * Example Usage:
- *
- * export function MyComponentNeedingThisSlice() {
- *  const { actions } = useTableSlice();
- *
- *  const onButtonClick = (evt) => {
- *    dispatch(actions.someAction());
- *   };
- * }
- */

@@ -20,6 +20,7 @@ const slice = createSlice({
   reducers: {
     setForecastData(state, action: PayloadAction<{ id: string; data: [] }>) {
       const { id, data } = action.payload;
+      // Only save data that is actually needed
       const forecastData: WeatherNode[] = data.map(
         ({ min_temp, max_temp, ts }) => ({
           min_temp,
@@ -47,15 +48,3 @@ export const useChartSlice = () => {
   useInjectSaga({ key: slice.name, saga: chartSaga });
   return { actions: slice.actions };
 };
-
-/**
- * Example Usage:
- *
- * export function MyComponentNeedingThisSlice() {
- *  const { actions } = useChartSlice();
- *
- *  const onButtonClick = (evt) => {
- *    dispatch(actions.someAction());
- *   };
- * }
- */

@@ -8,6 +8,9 @@ import * as React from 'react';
 import { useRef, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
+// highchart defaults
+import highChartsOptions from './slice/highChartsOptions';
+
 import {
   // selectActiveCityName,
   selectIsError,
@@ -22,28 +25,8 @@ import HighchartsReact from 'highcharts-react-official';
 import { useChartSlice } from './slice';
 import { selectCities } from '../Table/slice/selectors';
 
-const defaultChartOptions: Highcharts.Options = {
-  yAxis: {
-    title: {
-      text: 'Temperature C`°',
-    },
-  },
-  xAxis: {
-    type: 'datetime',
-    showFirstLabel: true,
-    showLastLabel: true,
-    tickInterval: 24 * 3600 * 1000,
-    tickWidth: 0,
-    gridLineWidth: 1,
-    accessibility: {
-      rangeDescription: `Range: 16 days from today`,
-    },
-  },
-};
-
 export default function Chart(props: HighchartsReact.Props) {
-  const [options, setOptions] =
-    useState<Highcharts.Options>(defaultChartOptions);
+  const [options, setOptions] = useState(highChartsOptions.default);
   const chartComponentRef = useRef<HighchartsReact.RefObject>(null);
 
   useChartSlice();
@@ -58,6 +41,7 @@ export default function Chart(props: HighchartsReact.Props) {
 
   const [cityName, setCityName] = useState('');
 
+  // Get city name from city ID to display in chart title
   useEffect(() => {
     if (cities)
       setCityName(
@@ -65,87 +49,32 @@ export default function Chart(props: HighchartsReact.Props) {
       );
   }, [activeCity, cities]);
 
+  // Change the way the chart is rendered based on the loading, error or success states
   useEffect(() => {
     if (isLoading) {
       setOptions(oldOptions => ({
         ...oldOptions,
-        title: {
-          text: 'Loading...',
-          style: {
-            color: 'orange',
-          },
-        },
-        subtitle: {
-          text: 'Your data will be loaded shortly',
-          style: {
-            color: 'orange',
-          },
-        },
+        ...highChartsOptions.loading,
       }));
     } else if (isError) {
       setOptions(oldOptions => ({
         ...oldOptions,
-        title: {
-          text: 'ERROR!',
-          style: {
-            color: 'red',
-          },
-        },
-        subtitle: {
-          text: 'Your data could not be loaded',
-          style: {
-            color: 'red',
-          },
-        },
+        ...highChartsOptions.error,
       }));
     } else {
-      setOptions(oldOptions => ({
-        ...oldOptions,
-        title: {
+      setOptions(() => {
+        const newOptions = { ...highChartsOptions.default };
+        newOptions.title = {
           text: cityName,
           style: {
             color: 'black',
           },
-        },
-        subtitle: {
-          text: 'Minimum and maximum temperature 16 day forecast',
-          style: { color: 'black' },
-        },
-        xAxis: {
-          type: 'datetime',
-          showFirstLabel: true,
-          showLastLabel: true,
-          tickInterval: 24 * 3600 * 1000,
-          tickWidth: 0,
-          gridLineWidth: 1,
-          accessibility: {
-            rangeDescription: `Range: 16 days from today`,
-          },
-        },
-        series: [
-          {
-            name: 'Minimum temperatures',
-            type: 'line',
-            data: minTemps,
-            states: {
-              hover: {
-                enabled: false,
-              },
-            },
-          },
-          {
-            name: 'Maximum temperatures',
-            type: 'line',
-            data: maxTemps,
-            color: 'red',
-            states: {
-              hover: {
-                enabled: false,
-              },
-            },
-          },
-        ],
-      }));
+        };
+        newOptions.series[0].data = minTemps;
+        newOptions.series[1].data = maxTemps;
+
+        return newOptions;
+      });
     }
   }, [isError, isLoading, maxTemps, minTemps, cityName]);
 

@@ -17,8 +17,7 @@ import { useTableSlice, cityChanged, fetchCities } from './slice';
 import { selectActiveCity } from '../Chart/slice/selectors';
 
 export default function Table() {
-  const slice = useTableSlice();
-  const { actions } = slice;
+  useTableSlice();
 
   const cities = useSelector(selectCities);
   const isLoading = useSelector(selectIsLoading);
@@ -28,13 +27,12 @@ export default function Table() {
   const dispatch = useDispatch();
 
   const handleActiveCityChange = (e, id: string) => {
-    console.log(activeCity);
     if (activeCity !== id) dispatch(cityChanged(id));
   };
 
   useEffect(() => {
     dispatch(fetchCities());
-  }, [actions, dispatch]);
+  }, [dispatch]);
 
   return (
     <div>
@@ -47,7 +45,6 @@ export default function Table() {
       ) : isError ? (
         <h1>ERROR</h1>
       ) : (
-        cities &&
         cities.map(city => {
           const { id, name } = city;
 
